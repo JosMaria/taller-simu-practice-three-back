@@ -2,18 +2,27 @@ package org.genesiscode.practicethree.controller;
 
 import org.genesiscode.practicethree.dto.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
+@Validated
 @RestController
-@RequestMapping("/api/v1/exercise-one")
+@RequestMapping("/api/v1/exercises")
 public class MainController {
 
+    // middlesquare
+    public static final String MSG_ERROR_TIMES = "times tiene que ser mayor que 0.";
+
     @GetMapping("/middleSquare")
-    public ResponseEntity<List<MiddleSquareResponseDTO>> middleSquare() {
+    public ResponseEntity<List<MiddleSquareResponseDTO>> middleSquare(
+            @RequestParam @Positive Long seed,
+            @RequestParam @Positive(message = MSG_ERROR_TIMES) Integer times) {
         MiddleSquareResponseDTO row1 = new MiddleSquareResponseDTO((byte) 0, 0, 0L, "", "", 0.0);
         MiddleSquareResponseDTO row2 = new MiddleSquareResponseDTO((byte) 0, 0, 0L, "", "", 0.0);
         return ResponseEntity.ok(List.of(row1, row2));
