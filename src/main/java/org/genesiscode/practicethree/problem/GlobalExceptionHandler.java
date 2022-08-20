@@ -1,8 +1,9 @@
 package org.genesiscode.practicethree.problem;
 
-import org.genesiscode.practicethree.problem.response.ErrorResponse;
-import org.springframework.http.HttpStatus;
+import org.genesiscode.practicethree.problem.response.RequestErrorResponse;
+import org.genesiscode.practicethree.problem.response.ValidationErrorResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,12 +14,13 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Set;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(ConstraintViolationException exception, HttpServletRequest request) {
-        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+    public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException exception, HttpServletRequest request) {
         HashMap<String, String> paramsErrors = new HashMap<>();
         Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
         constraintViolations.forEach(violation -> paramsErrors.put(
@@ -27,12 +29,24 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest()
-                .body(ErrorResponse.builder()
+                .body(ValidationErrorResponse.builder()
                         .timestamp(LocalDateTime.now())
-                        .value(httpStatus.value())
-                        .name(httpStatus.name())
+                        .status(BAD_REQUEST.value())
+                        .error(BAD_REQUEST.name())
                         .path(request.getRequestURI())
                         .validations(paramsErrors)
+                        .build());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<RequestErrorResponse> handleMissingServletRequestParameter(MissingServletRequestParameterException exception, HttpServletRequest request) {
+        return ResponseEntity.badRequest()
+                .body(RequestErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(BAD_REQUEST.value())
+                        .error(BAD_REQUEST.name())
+                        .path(request.getRequestURI())
+                        .message(exception.getMessage())
                         .build());
     }
 

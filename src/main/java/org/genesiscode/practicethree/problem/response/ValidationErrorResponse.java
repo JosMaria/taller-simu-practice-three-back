@@ -4,15 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @SuperBuilder
 @Getter
 @Setter
-public class ErrorResponse {
+public class ValidationErrorResponse extends ErrorResponse {
 
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String path;
+    private HashMap<String, String> validations;
 }
