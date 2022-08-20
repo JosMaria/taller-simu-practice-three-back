@@ -1,7 +1,7 @@
 package org.genesiscode.practicethree.controller;
 
 import org.genesiscode.practicethree.dto.*;
-import org.genesiscode.practicethree.validation.GreaterThan;
+import org.genesiscode.practicethree.annotation.GreaterThan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

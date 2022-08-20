@@ -1,4 +1,6 @@
-package org.genesiscode.practicethree.validation;
+package org.genesiscode.practicethree.annotation;
+
+import org.genesiscode.practicethree.annotation.validator.GreaterThanValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
