@@ -1,18 +1,18 @@
 package org.genesiscode.practicethree.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class AverageProductResponseDTO {
 
-    private Byte n;
-    private Integer value1;
-    private Integer value2;
-    private Long value3;
-    private String value4;
-    private Double value5;
+    private Byte numberOfRow;
+    private Integer valueOne;
+    private Integer valueTwo;
+    private String valueThree;
+    private String valueFour;
+    private Double valueFive;
 }

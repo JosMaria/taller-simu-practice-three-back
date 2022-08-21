@@ -33,10 +33,11 @@ public class MainController {
     }
 
     @GetMapping("/averageProduct")
-    public ResponseEntity<List<AverageProductResponseDTO>> averageProduct() {
-        AverageProductResponseDTO row1 = new AverageProductResponseDTO((byte) 0, 0, 0, 0L, "", 0.0);
-        AverageProductResponseDTO row2 = new AverageProductResponseDTO((byte) 0, 0, 0, 0L, "", 0.0);
-        return ResponseEntity.ok(List.of(row1, row2));
+    public ResponseEntity<List<AverageProductResponseDTO>> averageProduct(
+            @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_SEED) Integer seedOne,
+            @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_SEED) Integer seedTwo,
+            @RequestParam(name = "times") @Positive(message = MSG_ERROR_TIMES) Integer numberOfIterations) {
+        return ResponseEntity.ok(mainService.averageProduct(seedOne, seedTwo, numberOfIterations));
     }
 
     @GetMapping("/constantMultiplier")

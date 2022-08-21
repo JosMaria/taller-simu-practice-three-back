@@ -1,5 +1,6 @@
 package org.genesiscode.practicethree.service.impl;
 
+import org.genesiscode.practicethree.dto.AverageProductResponseDTO;
 import org.genesiscode.practicethree.dto.MiddleSquareResponseDTO;
 import org.genesiscode.practicethree.service.MainService;
 import org.genesiscode.practicethree.utils.Tool;
@@ -22,7 +23,7 @@ public class MainServiceImpl implements MainService {
             String number = String.valueOf(valueTwo);
             String valueThree = Tool.addZeros(number, d);
             String valueFour = Tool.extractNumber(valueThree, d);
-            Double valueFive = Tool.addZeroAndPoint(valueFour);
+            double valueFive = Tool.addZeroAndPoint(valueFour);
 
             list.add(buildMiddleSquare((byte) (i + 1), tempSeed, valueTwo, valueThree, valueFour, valueFive));
             tempSeed = Integer.parseInt(valueFour);
@@ -35,6 +36,35 @@ public class MainServiceImpl implements MainService {
         return MiddleSquareResponseDTO.builder()
                 .numberOfRow(numberOfRow)
                 .valueOne(seed)
+                .valueTwo(valueTwo)
+                .valueThree(valueThree)
+                .valueFour(valueFour)
+                .valueFive(valueFive)
+                .build();
+    }
+
+    @Override
+    public List<AverageProductResponseDTO> averageProduct(final Integer seedOne, final Integer seedTwo, final Integer numberOfIterations) {
+        List<AverageProductResponseDTO> list = new ArrayList<>();
+        int d = String.valueOf(seedOne).length();
+        int tempSeedOne = seedOne, tempSeedTwo = seedTwo;
+        for (int i = 0; i < numberOfIterations; i++) {
+            String valueThree = Tool.addZeros(String.valueOf(tempSeedOne * tempSeedTwo), d) ;
+            String valueFour = Tool.extractNumber(valueThree, d);
+            double valueFive = Tool.addZeroAndPoint(valueFour);
+
+            list.add(buildAverageProduct((byte) (i + 1), tempSeedOne, tempSeedTwo, valueThree, valueFour, valueFive));
+            tempSeedOne = tempSeedTwo;
+            tempSeedTwo = Integer.parseInt(valueFour);
+        }
+        return list;
+    }
+
+    private AverageProductResponseDTO buildAverageProduct(byte numberOfRow, Integer valueOne, Integer valueTwo,
+                                                          String valueThree, String valueFour, double valueFive) {
+        return AverageProductResponseDTO.builder()
+                .numberOfRow(numberOfRow)
+                .valueOne(valueOne)
                 .valueTwo(valueTwo)
                 .valueThree(valueThree)
                 .valueFour(valueFour)
