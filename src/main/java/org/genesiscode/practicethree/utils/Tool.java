@@ -17,4 +17,8 @@ public class Tool {
         int countToExtract = d / 2;
         return number.substring(countToExtract, number.length() - countToExtract);
     }
+
+    public static Double addZeroAndPoint(String number) {
+        return Double.valueOf(String.format("0.%s", number));
+    }
 }

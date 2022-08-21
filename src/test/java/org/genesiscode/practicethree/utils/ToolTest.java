@@ -30,8 +30,7 @@ class ToolTest {
                 arguments("5489649", 4, "05489649"),
                 arguments("15129", 4, "00015129"),
                 arguments("65526362", 5, "065526362"),
-                arguments("3745", 3, "03745")
-        );
+                arguments("3745", 3, "03745"));
     }
 
     @DisplayName("verify than extract numbers, it depends of D")
@@ -50,7 +49,24 @@ class ToolTest {
                 arguments("00015129", 4, "0151"),
                 arguments("06012304", 4, "0123"),
                 arguments("94245264", 4, "2452"),
-                arguments("23224", 3, "322")
-        );
+                arguments("23224", 3, "322"));
+    }
+
+    @DisplayName("verify than convert to decimal")
+    @MethodSource("addZeroAndPointData")
+    @ParameterizedTest(name = "#{index} - Test with number: {0} output: {1}")
+    void addZeroAndPointTest(String number, Double expected) {
+        // WHEN
+        Double actual = Tool.addZeroAndPoint(number);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    static Stream<Arguments> addZeroAndPointData() {
+        return Stream.of(
+                arguments("2343", 0.2343),
+                arguments("0151", 0.0151),
+                arguments("0123", 0.0123));
     }
 }
