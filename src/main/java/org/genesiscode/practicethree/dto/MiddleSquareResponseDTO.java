@@ -1,15 +1,15 @@
 package org.genesiscode.practicethree.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class MiddleSquareResponseDTO {
 
-    private Byte n;
+    private Byte numberOfRow;
     private Integer valueOne;
     private Long valueTwo;
     private String valueThree;

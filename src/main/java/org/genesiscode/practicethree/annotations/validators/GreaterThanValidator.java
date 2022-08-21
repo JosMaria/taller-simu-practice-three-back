@@ -1,11 +1,11 @@
-package org.genesiscode.practicethree.annotations.validator;
+package org.genesiscode.practicethree.annotations.validators;
 
 import org.genesiscode.practicethree.annotations.GreaterThan;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class GreaterThanValidator implements ConstraintValidator<GreaterThan, Long> {
+public class GreaterThanValidator implements ConstraintValidator<GreaterThan, Integer> {
 
     private int valueMin;
 
@@ -16,7 +16,7 @@ public class GreaterThanValidator implements ConstraintValidator<GreaterThan, Lo
     }
 
     @Override
-    public boolean isValid(Long seed, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Integer seed, ConstraintValidatorContext constraintValidatorContext) {
         return seed > valueMin;
     }
 }
