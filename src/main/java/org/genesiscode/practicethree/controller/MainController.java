@@ -22,6 +22,7 @@ public class MainController {
 
     public static final String MSG_ERROR_TIMES = "'number of iterations' must be greater than zero.";
     public static final String MSG_ERROR_SEED = "'seed' must be greater than or equal to 3 digits.";
+    public static final String MSG_ERROR_CONSTANT = "'constant' must be greater than or equal to 3 digits.";
 
     private final MainService mainService;
 
@@ -41,10 +42,11 @@ public class MainController {
     }
 
     @GetMapping("/constantMultiplier")
-    public ResponseEntity<List<ConstantMultiplierResponseDTO>> constantMultiplier() {
-        ConstantMultiplierResponseDTO row1 = new ConstantMultiplierResponseDTO((byte) 0, 0, 0, 0L, "", 0.0);
-        ConstantMultiplierResponseDTO row2 = new ConstantMultiplierResponseDTO((byte) 0, 0, 0, 0L, "", 0.0);
-        return ResponseEntity.ok(List.of(row1, row2));
+    public ResponseEntity<List<ConstantMultiplierResponseDTO>> constantMultiplier(
+            @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_SEED) Integer seed,
+            @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_CONSTANT) final Integer constant,
+            @RequestParam(name = "times") @Positive(message = MSG_ERROR_TIMES) Integer numberOfIterations) {
+        return ResponseEntity.ok(mainService.constantMultiplier(seed, constant, numberOfIterations));
     }
 
     @GetMapping("/mixed")

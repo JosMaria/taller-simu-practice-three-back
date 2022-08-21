@@ -1,6 +1,7 @@
 package org.genesiscode.practicethree.service.impl;
 
 import org.genesiscode.practicethree.dto.AverageProductResponseDTO;
+import org.genesiscode.practicethree.dto.ConstantMultiplierResponseDTO;
 import org.genesiscode.practicethree.dto.MiddleSquareResponseDTO;
 import org.genesiscode.practicethree.service.MainService;
 import org.genesiscode.practicethree.utils.Tool;
@@ -63,6 +64,34 @@ public class MainServiceImpl implements MainService {
     private AverageProductResponseDTO buildAverageProduct(byte numberOfRow, Integer valueOne, Integer valueTwo,
                                                           String valueThree, String valueFour, double valueFive) {
         return AverageProductResponseDTO.builder()
+                .numberOfRow(numberOfRow)
+                .valueOne(valueOne)
+                .valueTwo(valueTwo)
+                .valueThree(valueThree)
+                .valueFour(valueFour)
+                .valueFive(valueFive)
+                .build();
+    }
+
+    @Override
+    public List<ConstantMultiplierResponseDTO> constantMultiplier(final Integer seed, final Integer constant, final Integer numberOfIterations) {
+        List<ConstantMultiplierResponseDTO> list = new ArrayList<>();
+        int d = String.valueOf(seed).length();
+        int tempSeed = seed;
+        for (int i = 0; i < numberOfIterations; i++) {
+            String valueThree = Tool.addZeros(String.valueOf(constant * tempSeed), d);
+            String valueFour = Tool.extractNumber(valueThree, d);
+            double valueFive = Tool.addZeroAndPoint(valueFour);
+
+            list.add(buildConstantMultiplier((byte) (i + 1), constant, tempSeed, valueThree, valueFour, valueFive));
+            tempSeed = Integer.parseInt(valueFour);
+        }
+        return list;
+    }
+
+    private ConstantMultiplierResponseDTO buildConstantMultiplier(byte numberOfRow, Integer valueOne, Integer valueTwo,
+                                                                  String valueThree, String valueFour, double valueFive) {
+        return ConstantMultiplierResponseDTO.builder()
                 .numberOfRow(numberOfRow)
                 .valueOne(valueOne)
                 .valueTwo(valueTwo)
