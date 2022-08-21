@@ -12,4 +12,9 @@ public class Tool {
         }
         return builder.toString();
     }
+
+    public static String extractNumber(String number, int d) {
+        int countToExtract = d / 2;
+        return number.substring(countToExtract, number.length() - countToExtract);
+    }
 }

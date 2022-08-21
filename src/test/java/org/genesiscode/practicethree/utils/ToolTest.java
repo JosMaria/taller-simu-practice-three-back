@@ -13,9 +13,9 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ToolTest {
 
-    @ParameterizedTest(name = "#{index} - Test with number: {0}, D: {1}, output: {2}")
-    @MethodSource("addZerosData")
     @DisplayName("verify when adding zeros to the left")
+    @MethodSource("addZerosData")
+    @ParameterizedTest(name = "#{index} - Test with number: {0}, D: {1}, output: {2}")
     void addZerosTest(String number, int d, String expected) {
         // WHEN
         String actual = addZeros(number, d);
@@ -31,6 +31,26 @@ class ToolTest {
                 arguments("15129", 4, "00015129"),
                 arguments("65526362", 5, "065526362"),
                 arguments("3745", 3, "03745")
+        );
+    }
+
+    @DisplayName("verify than extract numbers, it depends of D")
+    @MethodSource("extractNumberData")
+    @ParameterizedTest(name = "#{index} - Test with number: {0}, D: {1}, output: {2}")
+    void extractNumberTest(String number, int d, String expected) {
+        // WHEN
+        String actual = Tool.extractNumber(number, d);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    static Stream<Arguments> extractNumberData() {
+        return Stream.of(
+                arguments("00015129", 4, "0151"),
+                arguments("06012304", 4, "0123"),
+                arguments("94245264", 4, "2452"),
+                arguments("23224", 3, "322")
         );
     }
 }
