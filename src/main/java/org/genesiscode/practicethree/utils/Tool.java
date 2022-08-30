@@ -23,6 +23,6 @@ public class Tool {
     }
 
     public static boolean isRelativePrime(int number, int module) {
-        return false;
+        return true;
     }
 }

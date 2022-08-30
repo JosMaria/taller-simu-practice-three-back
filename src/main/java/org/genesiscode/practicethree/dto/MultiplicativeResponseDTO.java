@@ -1,17 +1,29 @@
 package org.genesiscode.practicethree.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class MultiplicativeResponseDTO {
 
     private Byte n;
-    private Integer value1;
-    private Integer value2;
-    private Integer value3;
-    private String value4;
+    private Short valueOne;
+    private Short valueTwo;
+    private Short valueThree;
+    private String valueFour;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        MultiplicativeResponseDTO other = (MultiplicativeResponseDTO) obj;
+        return this.valueOne.equals(other.valueOne) &&
+                this.valueTwo.equals(other.valueTwo) &&
+                this.valueThree.equals(other.valueThree) &&
+                this.valueFour.equals(other.valueFour);
+    }
 }

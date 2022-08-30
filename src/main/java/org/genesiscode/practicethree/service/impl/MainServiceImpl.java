@@ -1,10 +1,7 @@
 package org.genesiscode.practicethree.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.genesiscode.practicethree.dto.AverageProductResponseDTO;
-import org.genesiscode.practicethree.dto.ConstantMultiplierResponseDTO;
-import org.genesiscode.practicethree.dto.MiddleSquareResponseDTO;
-import org.genesiscode.practicethree.dto.MixedResponseDTO;
+import org.genesiscode.practicethree.dto.*;
 import org.genesiscode.practicethree.problem.exceptions.RelativePrimeException;
 import org.genesiscode.practicethree.service.MainService;
 import org.genesiscode.practicethree.utils.Tool;
@@ -152,6 +149,48 @@ public class MainServiceImpl implements MainService {
                 .valueThree((short) valueThree)
                 .valueFour((short) valueFour)
                 .valueFive(valueFive)
+                .build();
+    }
+
+    @Override
+    public List<MultiplicativeResponseDTO> multiplicative(Integer seed, Integer multiplicativeConstant, Integer module) {
+        if (restrictionsMultiplicative()) {
+
+        }
+
+        List<MultiplicativeResponseDTO> list = new ArrayList<>();
+        int seedTemp = seed;
+        boolean isRepeat = false;
+        boolean isFirstIteration = true;
+        MultiplicativeResponseDTO firstRow = null;
+
+        for (int i = 0; i <= module && !isRepeat; i++) {
+            int valueTwo = seedTemp * multiplicativeConstant;
+            int valueThree = valueTwo % module;
+            String valueFour = valueThree == 0 ? String.valueOf(valueThree) : String.format("%s/%s", valueThree, module);
+            MultiplicativeResponseDTO rowActual = buildMultiplicativeResponseDTO(i+1, seedTemp, valueTwo, valueThree, valueFour);
+            if (isFirstIteration) {
+                firstRow = rowActual;
+            } else {
+                isRepeat = firstRow.equals(rowActual);
+            }
+            isFirstIteration = false;
+            list.add(rowActual);
+            seedTemp = valueThree;
+        }
+        return list;
+    }
+
+    private boolean restrictionsMultiplicative() {
+    }
+
+    private MultiplicativeResponseDTO buildMultiplicativeResponseDTO(int n, int valueOne, int valueTwo, int valueThree, String valueFour) {
+        return MultiplicativeResponseDTO.builder()
+                .n((byte) n)
+                .valueOne((short) valueOne)
+                .valueTwo((short) valueTwo)
+                .valueThree((short) valueThree)
+                .valueFour(valueFour)
                 .build();
     }
 }
