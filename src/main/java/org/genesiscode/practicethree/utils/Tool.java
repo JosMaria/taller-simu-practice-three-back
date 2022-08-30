@@ -21,4 +21,8 @@ public class Tool {
     public static Double addZeroAndPoint(String number) {
         return Double.valueOf(String.format("0.%s", number));
     }
+
+    public static boolean isRelativePrime(int number, int module) {
+        return false;
+    }
 }

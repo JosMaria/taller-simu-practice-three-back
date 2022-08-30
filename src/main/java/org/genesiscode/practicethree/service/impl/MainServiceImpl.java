@@ -5,12 +5,15 @@ import org.genesiscode.practicethree.dto.AverageProductResponseDTO;
 import org.genesiscode.practicethree.dto.ConstantMultiplierResponseDTO;
 import org.genesiscode.practicethree.dto.MiddleSquareResponseDTO;
 import org.genesiscode.practicethree.dto.MixedResponseDTO;
+import org.genesiscode.practicethree.problem.exceptions.RelativePrimeException;
 import org.genesiscode.practicethree.service.MainService;
 import org.genesiscode.practicethree.utils.Tool;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.genesiscode.practicethree.utils.Tool.isRelativePrime;
 
 @Slf4j
 @Service
@@ -108,7 +111,14 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public List<MixedResponseDTO> mixed(final Integer seed, Integer multiplicativeConstant, Integer additiveConstant, Integer module) {
+    public List<MixedResponseDTO> mixed(final Integer seed, final Integer multiplicativeConstant,
+                                        final Integer additiveConstant, final Integer module) {
+        // TODO: Implement isRelativePrime
+        if (! isRelativePrime(additiveConstant, module)) {
+            throw new RelativePrimeException(String.format(
+                    "Constante aditiva: %s no es relativamente primo al modulo: %s", additiveConstant, module));
+        }
+
         List<MixedResponseDTO> list = new ArrayList<>();
         int seedTemp = seed;
         boolean isFirstIteration = true;
