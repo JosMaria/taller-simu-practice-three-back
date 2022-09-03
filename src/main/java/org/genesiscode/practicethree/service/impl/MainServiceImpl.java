@@ -2,15 +2,12 @@ package org.genesiscode.practicethree.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.genesiscode.practicethree.dto.*;
-import org.genesiscode.practicethree.problem.exceptions.RelativePrimeException;
 import org.genesiscode.practicethree.service.MainService;
 import org.genesiscode.practicethree.utils.Tool;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.genesiscode.practicethree.utils.Tool.isRelativePrime;
 
 @Slf4j
 @Service
@@ -108,14 +105,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public List<MixedResponseDTO> mixed(final Integer seed, final Integer multiplicativeConstant,
+    public ResponseMessagesDTO<MixedResponseDTO> mixed(final Integer seed, final Integer multiplicativeConstant,
                                         final Integer additiveConstant, final Integer module) {
-        // TODO: Implement isRelativePrime
-        if (! isRelativePrime(additiveConstant, module)) {
-            throw new RelativePrimeException(String.format(
-                    "Constante aditiva: %s no es relativamente primo al modulo: %s", additiveConstant, module));
-        }
-
         List<MixedResponseDTO> list = new ArrayList<>();
         int seedTemp = seed;
         boolean isFirstIteration = true;
@@ -128,7 +119,6 @@ public class MainServiceImpl implements MainService {
             int valueFour = valueThree % module;
             String valueFive = valueFour == 0 ? String.valueOf(valueFour) : String.format("%s/%s", valueFour, module);
             MixedResponseDTO rowActual = buildMixedResponseDTO((byte) (i + 1), seedTemp, valueTwo, valueThree, valueFour, valueFive);
-
             if (isFirstIteration) {
                 firstRow = rowActual;
             } else {
@@ -138,12 +128,27 @@ public class MainServiceImpl implements MainService {
             list.add(rowActual);
             seedTemp = valueFour;
         }
-        return list;
+        return new ResponseMessagesDTO<>(list, messagesOfMixed(multiplicativeConstant, additiveConstant, module, list));
+    }
+
+    private List<String> messagesOfMixed(int multiplicativeConstant, int additiveConstant, int module, List<MixedResponseDTO> list) {
+        List<String> messages = new ArrayList<>();
+        if (! Tool.areRelativelyPrime(additiveConstant, module)) {
+            String message = String.format("Constante Aditiva: %s no es relativamente primo al Modulo: %s", additiveConstant, module);
+            messages.add(message);
+        }
+        if (multiplicativeConstant % 2 == 0) {
+            String message = String.format("Constante Multiplicativa: %s debe ser un entero impar", multiplicativeConstant);
+            messages.add(message);
+        }
+        String message = (list.size() - 1 < module) ? "NO CUMPLE UN PERIODO COMPLETO" : "PERIODO COMPLETO";
+        messages.add(message);
+        return messages;
     }
 
     private MixedResponseDTO buildMixedResponseDTO(byte n, int valueOne, int valueTwo, int valueThree, int valueFour, String valueFive) {
         return MixedResponseDTO.builder()
-                .n(n)
+                .numberOfRow(n)
                 .valueOne((short) valueOne)
                 .valueTwo((short) valueTwo)
                 .valueThree((short) valueThree)
@@ -182,6 +187,7 @@ public class MainServiceImpl implements MainService {
     }
 
     private boolean restrictionsMultiplicative() {
+        return true;
     }
 
     private MultiplicativeResponseDTO buildMultiplicativeResponseDTO(int n, int valueOne, int valueTwo, int valueThree, String valueFour) {

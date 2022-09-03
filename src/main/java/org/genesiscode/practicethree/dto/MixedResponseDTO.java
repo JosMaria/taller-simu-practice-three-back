@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class MixedResponseDTO {
 
-    private Byte n;
+    private Byte numberOfRow;
     private Short valueOne;
     private Short valueTwo;
     private Short valueThree;

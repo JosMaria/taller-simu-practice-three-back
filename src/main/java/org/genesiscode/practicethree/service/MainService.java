@@ -12,7 +12,7 @@ public interface MainService {
 
     List<ConstantMultiplierResponseDTO> constantMultiplier(Integer seed, Integer constant, Integer numberOfIterations);
 
-    List<MixedResponseDTO> mixed(Integer seed, Integer multiplicativeConstant, Integer additiveConstant, Integer module);
+    ResponseMessagesDTO<MixedResponseDTO> mixed(Integer seed, Integer multiplicativeConstant, Integer additiveConstant, Integer module);
 
     List<MultiplicativeResponseDTO> multiplicative(Integer seed, Integer multiplicativeConstant, Integer module);
 }

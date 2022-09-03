@@ -48,7 +48,7 @@ public class MainController {
     }
 
     @GetMapping("/mixed")
-    public ResponseEntity<List<MixedResponseDTO>> mixed(
+    public ResponseEntity<ResponseMessagesDTO<MixedResponseDTO>> mixed(
             @RequestParam Integer seed,
             @RequestParam(name = "multiplicative") Integer multiplicativeConstant,
             @RequestParam(name = "additive") Integer additiveConstant,
