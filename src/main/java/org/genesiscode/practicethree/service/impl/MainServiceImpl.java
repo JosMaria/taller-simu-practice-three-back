@@ -1,8 +1,7 @@
 package org.genesiscode.practicethree.service.impl;
 
-import org.genesiscode.practicethree.dto.AverageProductResponseDTO;
-import org.genesiscode.practicethree.dto.ConstantMultiplierResponseDTO;
-import org.genesiscode.practicethree.dto.MiddleSquareResponseDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.genesiscode.practicethree.dto.*;
 import org.genesiscode.practicethree.service.MainService;
 import org.genesiscode.practicethree.utils.Tool;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class MainServiceImpl implements MainService {
 
@@ -29,6 +29,7 @@ public class MainServiceImpl implements MainService {
             list.add(buildMiddleSquare((byte) (i + 1), tempSeed, valueTwo, valueThree, valueFour, valueFive));
             tempSeed = Integer.parseInt(valueFour);
         }
+        log.info("Middle Squares requests completed successfully");
         return list;
     }
 
@@ -58,6 +59,7 @@ public class MainServiceImpl implements MainService {
             tempSeedOne = tempSeedTwo;
             tempSeedTwo = Integer.parseInt(valueFour);
         }
+        log.info("Average Product requests completed successfully");
         return list;
     }
 
@@ -86,6 +88,7 @@ public class MainServiceImpl implements MainService {
             list.add(buildConstantMultiplier((byte) (i + 1), constant, tempSeed, valueThree, valueFour, valueFive));
             tempSeed = Integer.parseInt(valueFour);
         }
+        log.info("Constant Multiplier requests completed successfully");
         return list;
     }
 
@@ -98,6 +101,102 @@ public class MainServiceImpl implements MainService {
                 .valueThree(valueThree)
                 .valueFour(valueFour)
                 .valueFive(valueFive)
+                .build();
+    }
+
+    @Override
+    public ResponseMessagesDTO<MixedResponseDTO> mixed(final Integer seed, final Integer multiplicativeConstant,
+                                        final Integer additiveConstant, final Integer module) {
+        List<MixedResponseDTO> list = new ArrayList<>();
+        int seedTemp = seed;
+        boolean isFirstIteration = true;
+        MixedResponseDTO firstRow = null;
+        boolean isRepeat = false;
+
+        for (int i = 0; i <= module && !isRepeat; i++) {
+            int valueTwo = multiplicativeConstant * seedTemp;
+            int valueThree = valueTwo + additiveConstant;
+            int valueFour = valueThree % module;
+            String valueFive = valueFour == 0 ? String.valueOf(valueFour) : String.format("%s/%s", valueFour, module);
+            MixedResponseDTO rowActual = buildMixedResponseDTO((byte) (i + 1), seedTemp, valueTwo, valueThree, valueFour, valueFive);
+            if (isFirstIteration) {
+                firstRow = rowActual;
+            } else {
+                isRepeat = firstRow.equals(rowActual);
+            }
+            isFirstIteration = false;
+            list.add(rowActual);
+            seedTemp = valueFour;
+        }
+        return new ResponseMessagesDTO<>(list, messagesOfMixed(multiplicativeConstant, additiveConstant, module, list));
+    }
+
+    private List<String> messagesOfMixed(int multiplicativeConstant, int additiveConstant, int module, List<MixedResponseDTO> list) {
+        List<String> messages = new ArrayList<>();
+        if (! Tool.areRelativelyPrime(additiveConstant, module)) {
+            String message = String.format("Constante Aditiva: %s no es relativamente primo al Modulo: %s", additiveConstant, module);
+            messages.add(message);
+        }
+        if (multiplicativeConstant % 2 == 0) {
+            String message = String.format("Constante Multiplicativa: %s debe ser un entero impar", multiplicativeConstant);
+            messages.add(message);
+        }
+        String message = (list.size() - 1 < module) ? "NO CUMPLE UN PERIODO COMPLETO" : "PERIODO COMPLETO";
+        messages.add(message);
+        return messages;
+    }
+
+    private MixedResponseDTO buildMixedResponseDTO(byte n, int valueOne, int valueTwo, int valueThree, int valueFour, String valueFive) {
+        return MixedResponseDTO.builder()
+                .numberOfRow(n)
+                .valueOne((short) valueOne)
+                .valueTwo((short) valueTwo)
+                .valueThree((short) valueThree)
+                .valueFour((short) valueFour)
+                .valueFive(valueFive)
+                .build();
+    }
+
+    @Override
+    public List<MultiplicativeResponseDTO> multiplicative(Integer seed, Integer multiplicativeConstant, Integer module) {
+        if (restrictionsMultiplicative()) {
+
+        }
+
+        List<MultiplicativeResponseDTO> list = new ArrayList<>();
+        int seedTemp = seed;
+        boolean isRepeat = false;
+        boolean isFirstIteration = true;
+        MultiplicativeResponseDTO firstRow = null;
+
+        for (int i = 0; i <= module && !isRepeat; i++) {
+            int valueTwo = seedTemp * multiplicativeConstant;
+            int valueThree = valueTwo % module;
+            String valueFour = valueThree == 0 ? String.valueOf(valueThree) : String.format("%s/%s", valueThree, module);
+            MultiplicativeResponseDTO rowActual = buildMultiplicativeResponseDTO(i+1, seedTemp, valueTwo, valueThree, valueFour);
+            if (isFirstIteration) {
+                firstRow = rowActual;
+            } else {
+                isRepeat = firstRow.equals(rowActual);
+            }
+            isFirstIteration = false;
+            list.add(rowActual);
+            seedTemp = valueThree;
+        }
+        return list;
+    }
+
+    private boolean restrictionsMultiplicative() {
+        return true;
+    }
+
+    private MultiplicativeResponseDTO buildMultiplicativeResponseDTO(int n, int valueOne, int valueTwo, int valueThree, String valueFour) {
+        return MultiplicativeResponseDTO.builder()
+                .n((byte) n)
+                .valueOne((short) valueOne)
+                .valueTwo((short) valueTwo)
+                .valueThree((short) valueThree)
+                .valueFour(valueFour)
                 .build();
     }
 }

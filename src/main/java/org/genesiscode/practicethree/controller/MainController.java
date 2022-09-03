@@ -6,18 +6,16 @@ import org.genesiscode.practicethree.annotations.GreaterThan;
 import org.genesiscode.practicethree.service.MainService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
 
+@CrossOrigin
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/exercises")
+@RequestMapping("/api")
 public class MainController {
 
     public static final String MSG_ERROR_TIMES = "'number of iterations' must be greater than zero.";
@@ -44,23 +42,26 @@ public class MainController {
     @GetMapping("/constantMultiplier")
     public ResponseEntity<List<ConstantMultiplierResponseDTO>> constantMultiplier(
             @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_SEED) Integer seed,
-            @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_CONSTANT) final Integer constant,
+            @RequestParam @GreaterThan(valueMin = 999, message = MSG_ERROR_CONSTANT) Integer constant,
             @RequestParam(name = "times") @Positive(message = MSG_ERROR_TIMES) Integer numberOfIterations) {
         return ResponseEntity.ok(mainService.constantMultiplier(seed, constant, numberOfIterations));
     }
 
     @GetMapping("/mixed")
-    public ResponseEntity<List<MixedResponseDTO>> mixed() {
-        MixedResponseDTO row1 = new MixedResponseDTO((byte) 0, (short) 0, (short) 0, (short) 0, (short) 0, " 0/0");
-        MixedResponseDTO row2 = new MixedResponseDTO((byte) 0, (short) 0, (short) 0, (short) 0, (short) 0, " 0/0");
-        return ResponseEntity.ok(List.of(row1, row2));
+    public ResponseEntity<ResponseMessagesDTO<MixedResponseDTO>> mixed(
+            @RequestParam Integer seed,
+            @RequestParam(name = "multiplicative") Integer multiplicativeConstant,
+            @RequestParam(name = "additive") Integer additiveConstant,
+            @RequestParam Integer module) {
+        return ResponseEntity.ok(mainService.mixed(seed, multiplicativeConstant, additiveConstant, module));
     }
 
     @GetMapping("/multiplicative")
-    public ResponseEntity<List<MultiplicativeResponseDTO>> multiplicative() {
-        MultiplicativeResponseDTO row1 = new MultiplicativeResponseDTO((byte) 0, 0, 0, 0, "");
-        MultiplicativeResponseDTO row2 = new MultiplicativeResponseDTO((byte) 0, 0, 0, 0, "");
-        return ResponseEntity.ok(List.of(row1, row2));
+    public ResponseEntity<List<MultiplicativeResponseDTO>> multiplicative(
+            @RequestParam Integer seed,
+            @RequestParam("multiplicative") Integer multiplicativeConstant,
+            @RequestParam Integer module) {
+        return ResponseEntity.ok(mainService.multiplicative(seed, multiplicativeConstant, module));
     }
 
     @GetMapping("/additive")

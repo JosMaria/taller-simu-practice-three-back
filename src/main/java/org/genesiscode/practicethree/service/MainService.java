@@ -1,8 +1,6 @@
 package org.genesiscode.practicethree.service;
 
-import org.genesiscode.practicethree.dto.AverageProductResponseDTO;
-import org.genesiscode.practicethree.dto.ConstantMultiplierResponseDTO;
-import org.genesiscode.practicethree.dto.MiddleSquareResponseDTO;
+import org.genesiscode.practicethree.dto.*;
 
 import java.util.List;
 
@@ -13,4 +11,8 @@ public interface MainService {
     List<AverageProductResponseDTO> averageProduct(Integer seedOne, Integer seedTwo, Integer numberOfIterations);
 
     List<ConstantMultiplierResponseDTO> constantMultiplier(Integer seed, Integer constant, Integer numberOfIterations);
+
+    ResponseMessagesDTO<MixedResponseDTO> mixed(Integer seed, Integer multiplicativeConstant, Integer additiveConstant, Integer module);
+
+    List<MultiplicativeResponseDTO> multiplicative(Integer seed, Integer multiplicativeConstant, Integer module);
 }
